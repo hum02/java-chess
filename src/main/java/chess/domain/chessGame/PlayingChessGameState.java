@@ -4,6 +4,7 @@ import chess.domain.Board;
 import chess.domain.piece.Color;
 import chess.domain.position.Position;
 
+import java.util.List;
 import java.util.Map;
 
 public class PlayingChessGameState implements ChessGameState {
@@ -43,5 +44,10 @@ public class PlayingChessGameState implements ChessGameState {
     @Override
     public Map<Position, String> getPrintingBoard() {
         return board.getPrintingBoard();
+    }
+
+    @Override
+    public List<Double> calculateScore() {
+        return board.calculateScore();
     }
 }

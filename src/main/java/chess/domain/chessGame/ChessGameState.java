@@ -2,6 +2,7 @@ package chess.domain.chessGame;
 
 import chess.domain.position.Position;
 
+import java.util.List;
 import java.util.Map;
 
 public interface ChessGameState {
@@ -14,5 +15,7 @@ public interface ChessGameState {
     boolean isEnd();
 
     Map<Position, String> getPrintingBoard();
+
+    List<Double> calculateScore();
 }
 

@@ -39,6 +39,10 @@ public class Piece {
         return pieceState.isPawn();
     }
 
+    public double getScore() {
+        return pieceState.getScore();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

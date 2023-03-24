@@ -4,6 +4,7 @@ import chess.domain.Board;
 import chess.domain.position.Position;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 public class ReadyChessGameState implements ChessGameState {
@@ -34,5 +35,10 @@ public class ReadyChessGameState implements ChessGameState {
     @Override
     public Map<Position, String> getPrintingBoard() {
         return Collections.emptyMap();
+    }
+
+    @Override
+    public List<Double> calculateScore() {
+        throw new IllegalStateException("아직 게임을 시작하지 않었습니다. 점수를 계산할 수 없습니다.");
     }
 }

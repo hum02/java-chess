@@ -11,6 +11,7 @@ import chess.domain.position.Rank;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Board {
     private final Map<Position, Piece> board;
@@ -20,16 +21,48 @@ public class Board {
         initializePiece();
     }
 
+    public Board(Map<Position, Piece> board) {
+        this.board = board;
+    }
+
     public Map<Position, String> move(Position currentPosition, Position nextPosition, Color thisTurn) {
         Piece currentPiece = board.getOrDefault(currentPosition, BlankPiece.getInstance());
-        List<Position> routePositions = currentPiece.move(currentPosition, nextPosition);
         validateThisTurnColor(thisTurn, currentPiece);
 
+        List<Position> routePositions = currentPiece.move(currentPosition, nextPosition);
         if (currentPiece.isPawn()) {
             return movePawn(currentPosition, nextPosition, routePositions);
         }
 
         return moveGeneralPiece(nextPosition, currentPiece, routePositions);
+    }
+
+    public List<Double> calculateScore() {
+        double blackScore = getColorPiecesScore(Color.BLACK) - (0.5D * verticalSamePawnCount(Color.BLACK));
+        double whiteScore = getColorPiecesScore(Color.WHITE) - (0.5D * verticalSamePawnCount(Color.WHITE));
+        return List.of(blackScore, whiteScore);
+    }
+
+    private double getColorPiecesScore(Color color) {
+        return board.values().stream().filter(p -> p.isSameColor(color))
+                .map(Piece::getScore).reduce(0D, Double::sum);
+    }
+
+    private Long verticalSamePawnCount(Color color) {
+        long verticalPawnCount = 0;
+        List<Position> pawnPositions = board.entrySet().stream()
+                .filter(entry -> entry.getValue().isPawn())
+                .filter(e -> e.getValue().isSameColor(color))
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
+
+        for (File file : File.values()) {
+            long count = pawnPositions.stream().filter(p -> p.isSameFile(file)).count();
+            if (count >= 2) {
+                verticalPawnCount += count;
+            }
+        }
+        return verticalPawnCount;
     }
 
     private void validateThisTurnColor(Color thisTurn, Piece piece) {
@@ -49,6 +82,7 @@ public class Board {
     private Map<Position, String> movePawn(Position currentPosition, Position nextPosition, List<Position> routePositions) {
         Piece currentPiece = board.getOrDefault(currentPosition, BlankPiece.getInstance());
         Piece destinationPiece = board.getOrDefault(nextPosition, BlankPiece.getInstance());
+
         validateMiddlePathConflict(routePositions);
         if (currentPosition.isDiagonalEqual(nextPosition) && currentPiece.isOpponent(destinationPiece)) {
             updateMovedPiece(currentPosition, nextPosition, currentPiece);

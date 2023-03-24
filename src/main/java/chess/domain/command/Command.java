@@ -19,7 +19,8 @@ public enum Command {
     }
 
     public static Command parseCommand(String commandHead) {
-        return Arrays.stream(Command.values()).filter(c -> c.command.equals(commandHead)).findFirst()
+        return Arrays.stream(Command.values()).filter(c -> c.command.equals(commandHead))
+                .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("올바른 명령어가 아닙니다."));
     }
 

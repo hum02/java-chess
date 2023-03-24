@@ -27,6 +27,10 @@ public class PieceState {
         return  moveRule.isPawnMove();
     }
 
+    public double getScore() {
+        return pieceType.getScore();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
